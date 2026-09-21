@@ -1,0 +1,87 @@
+{
+  "route": "What should happen to this pull request next, given what the body claims, what the changed paths show, and what the checks reported?",
+  "functions": {
+    "ready_for_manual_approval": {
+      "description": "every claim in the body is backed by something a reviewer could open and check, and nothing about the change demands a human reading the code",
+      "arguments": {
+        "residual_risk": {
+          "question": "Supposing the evidence is complete, how much risk is still carried by merging this?",
+          "options": {
+            "negligible": "documentation, comments or an isolated change that cannot affect running behaviour",
+            "ordinary": "a normal code change whose failure mode would be noticed and fixed",
+            "elevated": "correct as far as anyone can tell, but a failure would be expensive or slow to notice"
+          }
+        },
+        "needs_release_note": {
+          "question": "Would someone outside this repository notice a difference after this is merged?"
+        }
+      }
+    },
+    "request_evidence": {
+      "description": "the body asserts an outcome that no artifact in the pull request lets a reviewer verify independently",
+      "arguments": {
+        "missing": {
+          "question": "For the claim this pull request most needs to prove and currently does not, is {} the form of proof that would actually settle it?",
+          "options": {
+            "command_output": "the pasted output of a command that was actually run",
+            "ci_link": "a link to a continuous integration run showing the result",
+            "log_excerpt": "an excerpt of a log showing the behaviour before or after",
+            "commit_hash": "a commit or revision identifier the claim applies to",
+            "screenshot": "a picture of a rendered or visual result",
+            "reviewer_signoff": "a named person confirming they checked it"
+          }
+        },
+        "severity": {
+          "question": "Does the missing proof block a decision, or is the claim incidental?",
+          "stated": "Does the body make the unproven claim central to why this should be merged?",
+          "options": {
+            "blocking": "the unproven claim is the reason this is being put forward",
+            "advisory": "the unproven claim is a side remark the decision does not rest on"
+          }
+        }
+      }
+    },
+    "deep_review": {
+      "description": "a person has to read this code before it merges, whatever the evidence attached to it says",
+      "arguments": {
+        "area": {
+          "question": "What is it about the changed paths that makes reading the code necessary?",
+          "options": {
+            "auth_or_secrets": "it touches who is allowed to do what, or handles credentials",
+            "data_or_migration": "it changes stored data or the shape of it",
+            "deploy_or_infra": "it changes how the system is built, released or run",
+            "shared_interface": "it changes something many other parts depend on",
+            "external_effect": "it causes something to happen outside this repository",
+            "complex_logic": "the reasoning in the change is intricate enough that tests would not catch a subtle error"
+          }
+        },
+        "reviewer": {
+          "question": "Whose judgement is the one actually needed here?",
+          "options": {
+            "security": "someone who thinks about how this could be abused",
+            "data": "someone who owns the correctness and shape of stored data",
+            "platform": "someone who owns how the system is built and run",
+            "domain_owner": "someone who knows what the feature is supposed to do"
+          }
+        },
+        "read_the_diff": {
+          "question": "Does the reviewer need to read the changed lines, rather than just the description?"
+        }
+      }
+    },
+    "hold": {
+      "description": "there is not enough here to send it down any other lane, or the signals contradict each other",
+      "arguments": {
+        "reason": {
+          "question": "What is it that prevents a decision from being reached at all?",
+          "options": {
+            "contradictory_evidence": "two things in the pull request cannot both be true",
+            "insufficient_information": "the body and paths do not say enough to judge",
+            "checks_unfinished": "automated checks have not reported yet",
+            "scope_undefined": "what this change is supposed to accomplish was never stated"
+          }
+        }
+      }
+    }
+  }
+}
