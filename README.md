@@ -88,6 +88,9 @@ gate/spec.json    what each lane and each argument means, in plain words
 gate/claims.py    what code does first: split the body into claims, count artifacts
 gate/policy.py    the lane is settled here, in code, by explicit conditions
 gate/fixtures.py  five synthetic pull requests, one per outcome
+gate/github_pr.py `gh pr view --json` output -> the gate's PR record; no network
+gate_real.py      run the gate on a real PR json. Dry run by default: writes the
+                  exact request body to out/realpr/ and sends nothing; --send posts it
 ```
 
 Note what `gate/lanes.py` does not contain: any `str` argument. There is no
@@ -111,6 +114,14 @@ Two of the five fixtures are decided against the model's own answer:
 | 103 touches auth and secrets | deep_review | security 0.99 | agrees |
 | 104 checks still queued | hold | **VERIFIED**: checks have not reported | request_evidence |
 | 105 a check is failing | request_evidence | **VERIFIED**: unit is FAILURE | agrees |
+
+## An empty claim list is not a clean bill
+
+If the splitter finds no checkable statement in a body of 400+ characters, the
+policy holds the PR instead of treating "nothing to prove" as evidence. An
+extractor miss must not read as a pass - that is exactly how a skipped check
+becomes one. The claim regex also covers Chinese phrasings (查證, 核對, 未執行,
+無影響, 不涉及 ...) so a Chinese-language body produces claims at all.
 
 ## Why the policy is not one question
 

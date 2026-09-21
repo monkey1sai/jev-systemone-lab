@@ -17,8 +17,9 @@ ARTIFACT = {
 }
 
 CLAIMY = re.compile(
-    r"(pass|passed|passing|green|verified|confirm|tested|works|fixed|resolved|no regression|"
-    r"covered|complete|succeeds?|benchmark|faster|通過|驗證|已測|修正|完成|無回歸|實測)", re.I)
+    r"(pass|passed|passing|green|verified|confirm|checked|tested|works|fixed|resolved|"
+    r"no regression|covered|complete|succeeds?|benchmark|faster|measured|"
+    r"通過|驗證|查證|核對|比對|已測|實測|量測|執行測試|未執行|修正|完成|落實|無回歸|無影響|不涉及)", re.I)
 
 
 @dataclass

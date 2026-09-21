@@ -80,6 +80,12 @@ def decide(pr, claims, call, t_artifact=0.5, t_flag=0.5, gate=0.70) -> Decision:
         return mk(EVIDENCE, "VERIFIED: a reported check is failing")
     if not pr.checks and claims:
         return mk(EVIDENCE, "VERIFIED: claims are made but no check reported at all")
+    # An empty claim list is not a clean bill of health. It means the splitter
+    # could not read this body, and an extractor miss must not read as evidence
+    # of nothing to prove - that is exactly how a skipped check becomes a pass.
+    if not claims and len(pr.body.strip()) >= 400:
+        verified.append(f"no checkable statement found in a {len(pr.body)}-char body")
+        return mk(HOLD, "VERIFIED: the claim splitter found nothing in a substantial body")
 
     # ---- model judgements, still applied as hard conditions ----
     if unevidenced:
